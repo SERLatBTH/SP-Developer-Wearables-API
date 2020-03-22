@@ -29,4 +29,4 @@ To collect static files (CSS, Javascript, etc) for Nginx
 * Docker version 19.03.8
 * docker-compose 1.25.4
 
-Tested on Ubuntu Server 18.04
+Tested on Ubuntu Server 18.04 - Use install_docker script on Ubuntu Server 18.04 to get started quickly.
