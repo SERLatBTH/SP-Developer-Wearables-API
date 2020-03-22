@@ -30,3 +30,14 @@ To collect static files (CSS, Javascript, etc) for Nginx
 * docker-compose 1.25.4
 
 Tested on Ubuntu Server 18.04 - Use install_docker script on Ubuntu Server 18.04 to get started quickly.
+
+## Environment file ##
+`DEBUG` set to 1 for debug messages, set to 0 for production environments
+
+`SECRET_KEY` generate long secret key, used for encryption etc
+
+`DJANGO_ALLOWED_HOSTS` add IP address of host running the server (like 10.10.10.31)
+
+`DJANGO_SUPERUSER_PASSWORD` is the default password used for createsuperuser command above (change this and change password of created user)
+
+`SQL_[...]` Set SQL values. `DATABASE`, `USER` and `PASSWORD` has to match in `.env.db`
