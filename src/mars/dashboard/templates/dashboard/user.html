@@ -1,0 +1,287 @@
+{% extends 'dashboard/layout.html' %}
+{% block content %}
+    <div class="container">
+        <h2 id="user_id">
+            {% if user_item %}
+                {% if user_item.id != request.user.id %}
+                    Viewing user <b>{{ user_item.username }}</b> as <b>{{ request.user.username }}</b>
+                {% else %}
+                    Logged in as <b>{{ user_item.username }}</b>
+                {% endif %}
+                <br><b>{{ user_item.username }}</b> has user id <b>{{ user_item.id }}</b>
+            {% else %}
+                Error
+            {% endif %}
+        </h2>
+        <div class="row">
+            <div class="col-lg"></div>
+            <div class="col-lg-9 col-md-12 col-sm-12">
+                <h1>API keys <small>Existing keys</small></h1>
+                <table class="hoverable">
+                    <thead>
+                        <tr>
+                        <th>Key</th>
+                        <th>Name</th>
+                        <th>Privilege</th>
+                        <th>Time added</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if api_keys_list %}
+                            {% for key in api_keys_list %}
+                                <tr>
+                                    <td data-label="Key">{{ key.key }}</td>
+                                    <td data-label="Name">{{ key.name }}</td>
+                                    <td data-label="Privilege">
+                                    {% if key.read_access == 1 %}
+                                        Read /
+                                    {% else %}
+                                        - /
+                                    {% endif %}
+                                    {% if key.write_access == 1 %}
+                                        Write
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    </td>
+                                    <td data-label="Time added">{{ key.time_added }}</td>
+                                    <td data-label="Actions">
+                                        <div class="row">
+                                            <div class="col-sm-2 col-md-1 col-lg-1"></div>
+                                            <div class="col-sm col-md col-lg">
+                                                <label class="button primary" for="modal-control-1{{ key.id }}">Edit</label>
+                                                <input type="checkbox" id="modal-control-1{{ key.id }}" class="modal">
+                                                <div>
+                                                    <div class="card">
+                                                        <div class="row">
+                                                            <label for="modal-control-1{{ key.id }}" class="modal-close"></label>
+                                                            <h3 class="section">Edit key</h3>
+                                                        </div>
+                                                        <form action="{% url 'dashboard:edit_user_key' %}" method="post">
+                                                            {% csrf_token %}
+                                                            <div class="row">    
+                                                                <input class="col-sm-12" type="text" placeholder="Name" name="name"  maxlength="50" value="{{ key.name }}">
+                                                                <input type="hidden" name="key_id" value="{{ key.id }}"><br>
+                                                                <div class="col-sm-12">
+                                                                    <label for="write_checkbox">Write</label>
+                                                                    <input type="checkbox" name="write_checkbox" {% if key.write_access %}checked="true"{% endif %}>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <label for="read_checkbox">Read</label>
+                                                                    <input type="checkbox" name="read_checkbox" {% if key.read_access %}checked="true"{% endif %}>
+                                                                </div>
+                                                                <br>
+                                                                <input class="tertiary" type="submit" value="Edit key">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm col-md col-lg">
+                                                <form class="tableBtnForm" action="{% url 'dashboard:remove_user_key' %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="key_id" value="{{ key.id }}">
+                                                    <input class="secondary" type="submit" value="Remove">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+                <h1><small>Generate new key</small></h1>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
+                        <form action="{% url 'dashboard:create_user_key' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="name">Name</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Watch/IDE API..." id="name" name="name"  maxlength="50" required>
+                                </div>
+                            </div>
+                            <label><b>Permissions</b></label>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="write_checkbox">Write</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="checkbox" id="write_checkbox" name="write_checkbox">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="read_checkbox">Read</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="checkbox" id="read_checkbox" name="read_checkbox">
+                                </div>
+                            </div>
+                            {% if user_item %}
+                                {% if user_item.id != request.user.id %}
+                                    <!-- Don't worry, this is verified on the server, it doesn't blindly trust the user ;) Only staff can use this hidden value -->
+                                    <input type="hidden" name="user_id" value="{{ user_item.id }}">
+                                {% endif %}
+                            {% endif %}
+                            <input class="tertiary" type="submit" value="Create key">
+                        </form>
+                    </div>
+                    <div class="col-sm col-md col-lg"></div>
+                </div>
+            </div>
+            <div class="col-lg"></div>
+        </div>
+    
+        <div class="row">
+            <div class="col-lg"></div>
+            <div class="col-lg-9 col-md-12 col-sm-12">
+                <h1>Devices <small>Existing devices</small></h1>
+                <table class="hoverable">
+                    <thead>
+                        <tr>
+                        <th>Device ID</th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Time added</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if device_list %}
+                        {% for device in device_list %}
+                            <tr>
+                                <td data-label="Device ID">{{ device.id }}</td>
+                                <td data-label="Name">{{ device.name }}</td>
+                                <td data-label="Type">{{ device.device_type }}</td>
+                                <td data-label="Time added">{{ device.time_added }}</td>
+                                <td data-label="Actions">
+                                    <div class="row">
+                                            <div class="col-sm-2 col-md-1 col-lg-1"></div>
+                                            <div class="col-sm col-md col-lg">
+                                                <label class="button primary" for="modal-control-2{{ device.id }}">Edit</label>
+                                                <input type="checkbox" id="modal-control-2{{ device.id }}" class="modal">
+                                                <div>
+                                                    <div class="card">
+                                                        <div class="row">
+                                                            <label for="modal-control-2{{ device.id }}" class="modal-close"></label>
+                                                            <h3 class="section">Edit device</h3>
+                                                        </div>
+                                                        <form action="{% url 'dashboard:edit_user_device' %}" method="post">
+                                                            {% csrf_token %}
+                                                            <div class="row">    
+                                                                <input class="col-sm-12" type="text" placeholder="Name" name="name"  maxlength="50" value="{{ device.name }}">
+                                                                <input class="col-sm-12" type="text" placeholder="Type" name="d_type"  maxlength="50" value="{{ device.device_type }}">
+                                                                <input type="hidden" name="device_id" value="{{ device.id }}">
+                                                                <input class="tertiary" type="submit" value="Edit device">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm col-md col-lg">
+                                                <form class="tableBtnForm" action="{% url 'dashboard:remove_user_device' %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="device_id" value="{{ device.id }}">
+                                                    <input class="secondary" type="submit" value="Remove">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+                <h1><small>Add new device</small></h1>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
+                        <form action="{% url 'dashboard:add_new_device' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="name">Name</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="My watch..." id="name" name="name"  maxlength="50" required>
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="d_type">Type</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Garmin..." id="d_type" name="d_type"  maxlength="50" required>
+                                </div>
+                            </div>
+                            {% if user_item %}
+                                {% if user_item.id != request.user.id %}
+                                    <!-- Don't worry, this is verified on the server, it doesn't blindly trust the user ;) Only staff can use this hidden value -->
+                                    <input type="hidden" name="user_id" value="{{ user_item.id }}">
+                                {% endif %}
+                            {% endif %}
+                            <input class="tertiary" type="submit" value="Add device">
+                        </form>
+                    </div>
+                    <div class="col-sm col-md col-lg"></div>
+                </div>
+                {% if user_item %}
+                <h1>Edit account details</h1>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
+                        <form action="{% url 'dashboard:edit_account' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="fname">Firstname</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Firstname" id="fname" name="fname" value="{{ user_item.first_name }}" maxlength="30">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="lname">Lastname</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Lastname" id="lname" name="lname" value="{{ user_item.last_name }}" maxlength="150">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="username">Username</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Username" id="username" name="username" value="{{ user_item.username }}" maxlength="150" required>
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <label>Leave blank to not change password:</label>
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="password">Password</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="password" placeholder="Password (8 char minimum)" id="password" name="password" minlength="8" maxlength="72">
+                                </div>
+                            </div>
+                            <input type="hidden" name="user_id" value="{{ user_item.id }}">
+                            <input class="tertiary" type="submit" value="Save changes">
+                        </form>
+                    </div>
+                    <div class="col-sm col-md col-lg"></div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg"></div>
+        </div>
+    </div>
+{% endblock content %}

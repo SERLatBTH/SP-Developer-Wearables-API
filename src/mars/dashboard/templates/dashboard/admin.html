@@ -1,0 +1,330 @@
+{% extends 'dashboard/layout.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg"></div>
+            <div class="col-lg-9 col-md-12 col-sm-12">
+                <h1>Admin page <small>Users</small></h1>
+                <table class="hoverable">
+                    <thead>
+                        <tr>
+                        <th>Id</th>
+                        <th>Username</th>
+                        <th>Staff</th>
+                        <th>Last login</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if users_list %}
+                        {% for user_item in users_list %}
+                            <tr>
+                                <td data-label="Id">{{ user_item.id }}</td>
+                                <td data-label="Username"><a href="{% url 'dashboard:userpage' user_item.id %}">{{ user_item.username }}</a></td>
+                                <td data-label="Staff">
+                                {% if user_item.is_staff %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                                </td>
+                                <td data-label="Last login">{{ user_item.last_login }}</td>
+                                <td data-label="Actions">
+                                    <div class="row">
+                                    <div class="col-sm-2 col-md-1 col-lg-1"></div>
+                                        <div class="col-sm col-md col-lg">
+                                            <label class="button primary" for="modal-control-{{ user_item.id }}">Edit</label>
+                                            <input type="checkbox" id="modal-control-{{ user_item.id }}" class="modal">
+                                            <div>
+                                                <div class="card">
+                                                    <div class="row">
+                                                        <label for="modal-control-{{ user_item.id }}" class="modal-close"></label>
+                                                        <h3 class="section">Edit user</h3>
+                                                    </div>
+                                                    <form action="{% url 'dashboard:edit_account' %}" method="post">
+                                                        {% csrf_token %}
+                                                    <div class="row">    
+                                                        <input class="col-sm-12" type="text" placeholder="Firstname" id="fname" name="fname"  maxlength="30" value="{{ user_item.first_name }}">
+                                                        <input class="col-sm-12" type="text" placeholder="Lastname" id="lname" name="lname"  maxlength="150" value="{{ user_item.last_name }}">
+                                                        <input class="col-sm-12" type="text" placeholder="Username" id="username" name="username"  maxlength="150" required value="{{ user_item.username }}">
+                                                        <label>Leave blank to not change password:</label>
+                                                        <input class="col-sm-12" type="password" placeholder="Password (8 char minimum)" id="password" name="password" minlength="0" maxlength="72">
+                                                        
+                                                        <input type="hidden" name="user_id" value="{{ user_item.id }}"><br>
+                                                        <div class="col-sm-12">
+                                                            <label for="staff_checkbox">Staff</label>
+                                                            <input type="checkbox" id="staff_checkbox" name="staff_checkbox" {% if user_item.is_staff %}checked="true"{% endif %}>
+                                                        </div>
+                                                        <br>
+                                                        <input class="tertiary" type="submit" value="Edit user">
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm col-md col-lg">
+                                            <form class="tableBtnForm" action="{% url 'dashboard:toggle_active_account' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="user_id" value="{{ user_item.id }}">
+                                                {% if user_item.is_active %}
+                                                    <input class="secondary" type="submit" value="Disable">
+                                                {% else %}
+                                                    <input class="tertiary" type="submit" value="Enable">
+                                                {% endif %}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                    </table>
+                <h1><small>Create new user</small></h1>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
+                        <form action="{% url 'dashboard:create_account' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="fname">Firstname</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Firstname" id="fname" name="fname"  maxlength="30">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="lname">Lastname</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Lastname" id="lname" name="lname"  maxlength="150">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="username">Username</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Username" id="username" name="username"  maxlength="150" required>
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="password">Password</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="password" placeholder="Password" id="password" name="password" minlength="8" maxlength="72" required>
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="staff_checkbox">Staff</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="checkbox" id="staff_checkbox" name="staff_checkbox">
+                                </div>
+                            </div>
+                            <input class="tertiary" type="submit" value="Create user">
+                        </form>
+                    </div>
+                    <div class="col-sm col-md col-lg"></div>
+                </div>
+            </div>
+            <div class="col-lg"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg"></div>
+            <div class="col-lg-9 col-md-12 col-sm-12">
+                <h1>Global API keys <small>Existing keys</small></h1>
+                <table class="hoverable">
+                    <thead>
+                        <tr>
+                        <th>Key</th>
+                        <th>Name</th>
+                        <th>Privilege</th>
+                        <th>Time added</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if api_keys_list %}
+                            {% for key in api_keys_list %}
+                                <tr>
+                                    <td data-label="Key">{{ key.key }}</td>
+                                    <td data-label="Name">{{ key.name }}</td>
+                                    <td data-label="Privilege">
+                                    {% if key.read_access == 1 %}
+                                        Read /
+                                    {% else %}
+                                        - /
+                                    {% endif %}
+                                    {% if key.write_access == 1 %}
+                                        Write
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    </td>
+                                    <td data-label="Time added">{{ key.time_added }}</td>
+                                    <td data-label="Actions">
+                                        <div class="row">
+                                            <div class="col-sm-2 col-md-1 col-lg-1"></div>
+                                            <div class="col-sm col-md col-lg">
+                                                <label class="button primary" for="modal-control-1{{ key.id }}">Edit</label>
+                                                <input type="checkbox" id="modal-control-1{{ key.id }}" class="modal">
+                                                <div>
+                                                    <div class="card">
+                                                        <div class="row">
+                                                            <label for="modal-control-1{{ key.id }}" class="modal-close"></label>
+                                                            <h3 class="section">Edit key</h3>
+                                                        </div>
+                                                        <form action="{% url 'dashboard:edit_user_key' %}" method="post">
+                                                            {% csrf_token %}
+                                                            <div class="row">    
+                                                                <input class="col-sm-12" type="text" placeholder="Name" name="name"  maxlength="50" value="{{ key.name }}">
+                                                                <input type="hidden" name="key_id" value="{{ key.id }}"><br>
+                                                                <div class="col-sm-12">
+                                                                    <label for="write_checkbox">Write</label>
+                                                                    <input type="checkbox" name="write_checkbox" {% if key.write_access %}checked="true"{% endif %}>
+                                                                </div>
+                                                                <div class="col-sm-12">
+                                                                    <label for="read_checkbox">Read</label>
+                                                                    <input type="checkbox" name="read_checkbox" {% if key.read_access %}checked="true"{% endif %}>
+                                                                </div>
+                                                                <br>
+                                                                <input class="tertiary" type="submit" value="Edit key">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm col-md col-lg">
+                                                <form class="tableBtnForm" action="{% url 'dashboard:remove_user_key' %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="key_id" value="{{ key.id }}">
+                                                    <input class="secondary" type="submit" value="Remove">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+                <h1><small>Generate new global key</small></h1>
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-5">
+                        <form action="{% url 'dashboard:create_user_key' %}" method="post">
+                            {% csrf_token %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="name">Name</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="text" placeholder="Global API key" id="name" name="name"  maxlength="50" required>
+                                </div>
+                            </div>
+                            <label><b>Permissions</b></label>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="write_checkbox">Write</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="checkbox" id="write_checkbox" name="write_checkbox">
+                                </div>
+                            </div>
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="read_checkbox">Read</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <input type="checkbox" id="read_checkbox" name="read_checkbox">
+                                </div>
+                            </div>
+                            <!-- Don't worry, this is verified on the server, it doesn't blindly trust the user/client ;) Only staff can use this hidden value -->
+                            <input type="hidden" name="global_api" value="true">
+                            <input class="tertiary" type="submit" value="Create key">
+                        </form>
+                    </div>
+                    <div class="col-sm col-md col-lg"></div>
+                </div>
+            </div>
+            <div class="col-lg"></div>
+        </div>
+        <div class="row">
+        <div class="col-lg"></div>
+        <div class="col-lg-9 col-md-12 col-sm-12">
+        <h1 id="asd123">Statistics <small>{{ filter_status_text }}</small></h1>
+            <div class="row">
+                <div class="card">
+                    <div class="section">
+                        <h1 class="doc">{% if numbr_of_data_points %}{{ numbr_of_data_points }} {% else %} 0 {% endif %}</h1>
+                        <p class="doc">Number of data points</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section">
+                        <h1 class="doc">{% if numbr_of_activities %}{{ numbr_of_activities }} {% else %} 0 {% endif %}</h1>
+                        <p class="doc">Number of activities</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section">
+                        <h1 class="doc">{% if numbr_of_devices %}{{ numbr_of_devices }} {% else %} 0 {% endif %}</h1>
+                        <p class="doc">Number of devices</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-5">
+                    <form action="{% url 'dashboard:adminpage'  %}" method="GET">
+                        {% if users_list %}
+                            <div class="row responsive-label">
+                                <div class="col-sm-12 col-md-3 col-lg-3">
+                                    <label for="users">Filter by user:</label>
+                                </div>
+                                <div class="col-sm-12 col-md">
+                                    <select id="users" name="user_filter">
+                                            <option value="-1">-</option>
+                                            {% for user_item in users_list %}
+                                                <option value="{{ user_item.id }}"
+                                                    {% if 'user_filter' in request.GET %}
+                                                        {% if request.GET.user_filter == user_item.id|slugify %}
+                                                            selected 
+                                                        {% endif %}
+                                                    {% endif %}>
+                                                {{ user_item.username }}</option>
+                                            {% endfor %}
+                                    </select>        
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row responsive-label">
+                            <div class="col-sm-12 col-md-3 col-lg-3">
+                                <label for="start">Start date:</label>
+                            </div>
+                            <div class="col-sm-12 col-md">
+                                <input type="date" name="filter_start" {% if 'filter_start' in request.GET %}value="{{ request.GET.filter_start }}"{% endif %}>
+                            </div>
+                        </div>
+                        <div class="row responsive-label">
+                            <div class="col-sm-12 col-md-3 col-lg-3">
+                                <label for="end">End date:</label>
+                            </div>
+                            <div class="col-sm-12 col-md">
+                                <input type="date" name="filter_end" {% if 'filter_end' in request.GET %}value="{{ request.GET.filter_end }}"{% endif %}>
+                            </div>
+                        </div>
+                        <input class="primary" type="submit" value="Filter data">
+                    </form>
+                </div>
+                <div class="col-sm col-md col-lg"></div>
+            </div>
+        
+        </div>
+        <div class="col-lg"></div>
+        </div>
+    </div>
+{% endblock content %}
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Dashboard</title>
+    {% load static %}
+	<link rel="stylesheet" href="{% static "dashboard/mini-default.min.css" %}">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Mars">
+    <meta name="author" content="Ludwig Johnson">
+    <style>
+        body{
+            {% load static %}
+            background: url({% static "dashboard/bth.png" %}) white;
+            background-repeat: no-repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            background-size: 20vh;
+        }
+        main {
+            background: transparent;
+            height: 100vh;
+            width: 100vw;
+            margin: 0 auto;
+            padding: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+        @media only screen and (max-width: 1000px) {
+            body{
+                background-position: center center;
+                background-size: 90vw;
+                max-height: 100vh;
+            }
+            main{
+                background-color: rgba(255,255,255,0.95)
+            }
+        }
+        @media only screen and (max-width: 550px) {
+            .toast{
+                width: 75%;
+                text-align: center;
+            }
+        }
+        #loginbtn{
+            background-color: #448AFF;
+            color: #fff;
+        }
+        #user_id{
+            text-align: center;
+            left: 30%
+        }
+        form{
+            text-align: center;
+            background-color: transparent;
+            border: none;
+        }
+        .toast{
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+	<main>
+        <div class="login">
+            <form method="post">
+                <h1>Login</h1>
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username"><br>
+                <input type="password" name="password" placeholder="Password"><br>
+                <input type="submit" value="Login" id="loginbtn">
+            </form>
+        </div>
+	</main>
+    {% if message %}
+        <span class="toast">{{ message }}</span>
+    {% endif %}
+</body>
+</html>
