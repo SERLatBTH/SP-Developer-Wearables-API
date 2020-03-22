@@ -25,6 +25,9 @@ To create an admin user that can then create more users etc. Default password is
 
 To collect static files (CSS, Javascript, etc) for Nginx
 
+[![asciicast](docs/asciinema.png)](https://asciinema.org/a/c45V0MesCyCeSJVrElCnqnBh4)
+
+
 ## Dependencies ##
 * Docker version 19.03.8
 * docker-compose 1.25.4
