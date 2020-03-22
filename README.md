@@ -41,3 +41,16 @@ Tested on Ubuntu Server 18.04 - Use install_docker script on Ubuntu Server 18.04
 `DJANGO_SUPERUSER_PASSWORD` is the default password used for createsuperuser command above (change this and change password of created user)
 
 `SQL_[...]` Set SQL values. `DATABASE`, `USER` and `PASSWORD` has to match in `.env.db`
+
+## Webapp ##
+![Dashboard login](docs/dashboard_login.PNG)
+Found at http://x.x.x.x/ or http://x.x.x.x/dashboard
+![Dashboard admin page](docs/dashboard_admin.PNG)
+Admin page to add users, global API keys for exporting data from the API and see basic statistics
+![Dashboard user page](docs/dashboard_user.PNG)
+User page, accessible for users (admins can access other users user-pages) to add devices, API keys and edit settings
+![Django admin](docs/django_admin.PNG)
+Built-in Django admin page with access to all tables/data
+
+## API ##
+API information under docs
