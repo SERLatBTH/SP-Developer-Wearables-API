@@ -6,4 +6,4 @@ Not all headers/body content/params are necessary and can be checked/unchecked t
 about optional/required values, look at API documentation.
 
 ## API documentation ##
-TBA
+Available as pdf above and in Swagger format (and HTML generated from Swagger) under swagger directory.
