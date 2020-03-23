@@ -46,6 +46,9 @@ Tested on Ubuntu Server 18.04 - Use `install_docker.sh` script on Ubuntu Server 
 `SQL_[...]` Set SQL values. `DATABASE`, `USER` and `PASSWORD` has to match in `.env.db`
 
 ## Webapp ##
+### Video ###
+[![Video](https://img.youtube.com/vi/CbJpSg3_SSw/maxresdefault.jpg)](https://youtu.be/CbJpSg3_SSw)
+### Screenshots ###
 ![Dashboard login](docs/dashboard_login.PNG)
 Found at http://x.x.x.x/ or http://x.x.x.x/dashboard
 ![Dashboard admin page](docs/dashboard_admin.PNG)
