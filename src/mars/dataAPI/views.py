@@ -136,12 +136,12 @@ def validate_api_key(request, permissions):
             #incorrect user_id
             errors.append(100)
         else:
-            api_key_index = 0
+            api_key_index = -1
             for index, api_object in enumerate(api_objects):
                 # constant time function to avoid timing attacks against API key
                 if hmac.compare_digest(str(api_object.key), str(api_key)):
                     api_key_index = index
-            if api_key_index == 0:
+            if api_key_index == -1:
                 errors.append(100)
             elif api_objects[api_key_index].admin_access:
                 if permissions == READ_PERMISSION():
