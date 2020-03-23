@@ -1,0 +1,513 @@
+{
+	"info": {
+		"_postman_id": "0c48e04c-3b9e-4095-a49b-4fc3a4c29bfa",
+		"name": "Mars",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Device calls",
+			"item": [
+				{
+					"name": "Activity Control",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"description": "Not strictly needed, just convention"
+							},
+							{
+								"key": "USER-ID",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "1",
+								"description": "User id from dashboard"
+							},
+							{
+								"key": "API-KEY",
+								"type": "text",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "API key from dashboard"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"device_id\": \"1\",\n    \"action\": \"start\",\n    \"type\": \"code_review\",\n    \"repo\": \"torvalds/linux\",\n    \"commit\": \"asd123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/activity/control",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"activity",
+								"control"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activity Status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"description": "Not strictly needed, just convention"
+							},
+							{
+								"key": "USER-ID",
+								"type": "text",
+								"value": "1",
+								"description": "User id from dashboard"
+							},
+							{
+								"key": "API-KEY",
+								"type": "text",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "API key from dashboard"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/activity/status",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"activity",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json",
+								"description": "Not strictly needed, just convention"
+							},
+							{
+								"key": "USER-ID",
+								"type": "text",
+								"value": "1",
+								"description": "User id from dashboard"
+							},
+							{
+								"key": "API-KEY",
+								"type": "text",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "API key from dashboard"
+							},
+							{
+								"key": "DEVICE-ID",
+								"type": "text",
+								"value": "1",
+								"description": "Device id from dashboard"
+							},
+							{
+								"key": "ACTIVITY-ID",
+								"type": "text",
+								"value": "1",
+								"description": "Activity_id from \"Activity Control\" API call, \"start\" an activity to get an activity_id"
+							},
+							{
+								"key": "TYPE",
+								"type": "text",
+								"value": "heartbeat",
+								"description": "Type of data (will be used for filtering the data in output later)"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"bpm\": 123, \"message\": \"abc123\"}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/data/in",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"in"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Exporting data",
+			"item": [
+				{
+					"name": "Get users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-KEY",
+								"type": "text",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "Global API key for exporting data"
+							},
+							{
+								"key": "USER-ID",
+								"value": "1",
+								"description": "User ID associated with the global API key",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/data/out/users",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"out",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get activities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-KEY",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "Global API key for exporting data",
+								"type": "text"
+							},
+							{
+								"key": "USER-ID",
+								"value": "1",
+								"description": "User ID associated with the global API key",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/data/out/activity",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"out",
+								"activity"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Get a distinct activity id",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"description": "Get activities related to a specific user id",
+									"disabled": true
+								},
+								{
+									"key": "device_id",
+									"value": "1",
+									"description": "Get activities related to a specific device id",
+									"disabled": true
+								},
+								{
+									"key": "activity_type",
+									"value": "code_review",
+									"description": "Get activities with a certain activity type",
+									"disabled": true
+								},
+								{
+									"key": "repo",
+									"value": "torvalds/linux",
+									"description": "Get activities related to a specific git repository",
+									"disabled": true
+								},
+								{
+									"key": "commit",
+									"value": "f35111a946548e3b34a55abbad3e9bacce6cb10f",
+									"description": "Get activities related to a specific git commit",
+									"disabled": true
+								},
+								{
+									"key": "active",
+									"value": "true",
+									"description": "Get activities that are either active or not active",
+									"disabled": true
+								},
+								{
+									"key": "time_start",
+									"value": "2020-02-20T15:00:00",
+									"description": "Get activities that started at or after this value",
+									"disabled": true
+								},
+								{
+									"key": "time_end",
+									"value": "2020-02-24T13:23:45",
+									"description": "Get activities (only non-active ones) that has ended at or before this value",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-KEY",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "Global API key for exporting data",
+								"type": "text"
+							},
+							{
+								"key": "USER-ID",
+								"value": "1",
+								"description": "User ID associated with the global API key",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/data/out",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"out"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Get a specific data object",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"description": "Get data related to a specific user",
+									"disabled": true
+								},
+								{
+									"key": "device_id",
+									"value": "1",
+									"description": "Get data related to a specific device",
+									"disabled": true
+								},
+								{
+									"key": "activity_id",
+									"value": "8",
+									"description": "Get data related to a specific activity",
+									"disabled": true
+								},
+								{
+									"key": "type_of_data",
+									"value": "heartbeat",
+									"description": "Get data of a specific type",
+									"disabled": true
+								},
+								{
+									"key": "activity_type",
+									"value": "code_review",
+									"description": "Get data from an activity of a certain type",
+									"disabled": true
+								},
+								{
+									"key": "active",
+									"value": "false",
+									"description": "Get data from active activities",
+									"disabled": true
+								},
+								{
+									"key": "repo",
+									"value": "torvalds/linux",
+									"description": "Get data related to a specific git repository",
+									"disabled": true
+								},
+								{
+									"key": "commit",
+									"value": "f35111a946548e3b34a55abbad3e9bacce6cb10f",
+									"description": "Get data related to a specific git commit",
+									"disabled": true
+								},
+								{
+									"key": "device_name",
+									"value": "My_watch",
+									"description": "Get data related to a device's name",
+									"disabled": true
+								},
+								{
+									"key": "device_type",
+									"value": "Garmin 6X",
+									"description": "Get data related to a device's type",
+									"disabled": true
+								},
+								{
+									"key": "before_time",
+									"value": "2020-03-10T20:00:00",
+									"description": "Get data at or before this timestamp",
+									"disabled": true
+								},
+								{
+									"key": "after_time",
+									"value": "2020-03-05T20:32:12",
+									"description": "Get data at or after this timestamp",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get devices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "API-KEY",
+								"value": "3cf54f9495f935ea18f5",
+								"description": "Global API key for exporting data",
+								"type": "text"
+							},
+							{
+								"key": "USER-ID",
+								"value": "1",
+								"description": "User ID associated with the global API key",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://x.x.x.x/api/v1/data/out/device",
+							"protocol": "http",
+							"host": [
+								"x",
+								"x",
+								"x",
+								"x"
+							],
+							"path": [
+								"api",
+								"v1",
+								"data",
+								"out",
+								"device"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Get a distinct device from id",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "My_watch",
+									"description": "Get devices with certain name",
+									"disabled": true
+								},
+								{
+									"key": "device_type",
+									"value": "Garmin 6X",
+									"description": "Get devices of a certain type",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "1",
+									"description": "Get devices belonging to a certain user",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
