@@ -1,4 +1,5 @@
 # Documentation #
+Quick installation and web app instructions in the manual.pdf file.
 ## Postman collection ##
 `Mars.postman_collection.json` is a collection for Postman to be able to test the API.
 Each API call has to be modified to the correct URL and change the sample values in Headers, Body and Params to reflect your setup.
