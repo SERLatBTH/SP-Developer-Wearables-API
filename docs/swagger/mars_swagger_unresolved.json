@@ -1,0 +1,801 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "API documentation for the MARS API",
+    "version" : "1.0.0",
+    "title" : "MARS API",
+    "license" : {
+      "name" : "MIT License",
+      "url" : "https://opensource.org/licenses/MIT"
+    }
+  },
+  "tags" : [ {
+    "name" : "Device",
+    "description" : "Device API calls"
+  }, {
+    "name" : "Export",
+    "description" : "Export meta data and physiological data"
+  } ],
+  "paths" : {
+    "/activity/control" : {
+      "post" : {
+        "summary" : "Start/stop activites",
+        "description" : "Start/stop activities and add meta data related to activity such as git repositories/commits and type of activity\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes. If activity_id is 0, there is no active activity for that user.",
+            "schema" : {
+              "$ref" : "#/definitions/ActivityResponse"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Device" ],
+        "operationId" : "activityControl",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "JSON formatted data",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ActivityControl"
+          }
+        } ]
+      }
+    },
+    "/activity/status" : {
+      "get" : {
+        "summary" : "Get activity status",
+        "description" : "Get if there is an active activity for the user\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes. If activity_id is 0, there is no active activity for that user.",
+            "schema" : {
+              "$ref" : "#/definitions/ActivityResponse"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Device" ],
+        "operationId" : "activityStatus",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        } ]
+      }
+    },
+    "/data/in" : {
+      "post" : {
+        "summary" : "Send data to server",
+        "description" : "Send JSON formatted data to server with an associated activity.\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes. If continue is false, there is no active activity for that user and the device should stop trying to send data.",
+            "schema" : {
+              "$ref" : "#/definitions/DataInResponse"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Device" ],
+        "operationId" : "dataIn",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "header",
+          "name" : "DEVICE-ID",
+          "description" : "The device_id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "ACTIVITY-ID",
+          "description" : "ID of activity started from activity/control or gotten from activity/status",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "TYPE",
+          "description" : "Type of data being sent",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "JSON formatted data. No processing on server, device decides content. Below is an example.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/dataIn"
+          }
+        } ]
+      }
+    },
+    "/data/out/users" : {
+      "get" : {
+        "summary" : "Get users",
+        "description" : "Get registered users - requires a global API key (only admins can generate these)\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes.",
+            "schema" : {
+              "$ref" : "#/definitions/GetUsers"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Export" ],
+        "operationId" : "getUsers",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The global API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        } ]
+      }
+    },
+    "/data/out/activity" : {
+      "get" : {
+        "summary" : "Get activity information",
+        "description" : "Get information about activities with filtering\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes.",
+            "schema" : {
+              "$ref" : "#/definitions/GetActivity"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Export" ],
+        "operationId" : "getActivities",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The global API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "id",
+          "description" : "Filter by an activity id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "user_id",
+          "description" : "Filter by user id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "device_id",
+          "description" : "Filter by device id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "activity_type",
+          "description" : "Filter by type of activity (ex code review)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "repo",
+          "description" : "Filter by git repository (ex torvalds/linux)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "commit",
+          "description" : "Filter by git commit (ex f35111a946548e3b34a55abbad3e9bacce6cb10f)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "active",
+          "description" : "Filter by if activity is active or not",
+          "type" : "boolean"
+        }, {
+          "in" : "query",
+          "name" : "time_start",
+          "description" : "Filter with data only after timestamp. Example 2016-08-29T09:12:33.001 or example: 2016-08-29T09:12:33",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "time_end",
+          "description" : "Filter with data only before timestamp. Example 2016-08-29T09:12:33.001 or example: 2016-08-29T09:12:33",
+          "type" : "string"
+        } ]
+      }
+    },
+    "/data/out/device" : {
+      "get" : {
+        "summary" : "Get device information",
+        "description" : "Get information about devices with filtering\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes.",
+            "schema" : {
+              "$ref" : "#/definitions/GetDevices"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Export" ],
+        "operationId" : "getDevices",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The global API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "id",
+          "description" : "Filter by a device id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "user_id",
+          "description" : "Filter by user id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "device_type",
+          "description" : "Filter by device type",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "name",
+          "description" : "Filter by device name",
+          "type" : "string"
+        } ]
+      }
+    },
+    "/data/out" : {
+      "get" : {
+        "summary" : "Get data",
+        "description" : "Export data from devices with filtering\n",
+        "responses" : {
+          "200" : {
+            "description" : "Response, success is false if something failed and the errors array contains error codes. (data field is an example, depends on device implementation)",
+            "schema" : {
+              "$ref" : "#/definitions/DataOut"
+            }
+          },
+          "405" : {
+            "description" : "Method not allowed (using POST on a GET request for example)"
+          },
+          "500" : {
+            "description" : "Internal Server Error - contact administrator"
+          }
+        },
+        "tags" : [ "Export" ],
+        "operationId" : "getData",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "header",
+          "name" : "USER-ID",
+          "description" : "The user id from the dashboard",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "header",
+          "name" : "API-KEY",
+          "description" : "The global API key associated to the user from the dashboard",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "id",
+          "description" : "Filter by a specific data entry",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "user_id",
+          "description" : "Filter by user id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "device_id",
+          "description" : "Filter by device id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "activity_id",
+          "description" : "Filter by activity id",
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1
+        }, {
+          "in" : "query",
+          "name" : "type_of_data",
+          "description" : "Filter by type of data (ex heartrate)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "activity_type",
+          "description" : "Filter by type of activity (ex code review)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "active",
+          "description" : "Filter by if activity is active or not",
+          "type" : "boolean"
+        }, {
+          "in" : "query",
+          "name" : "repo",
+          "description" : "Filter by git repository (ex torvalds/linux)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "commit",
+          "description" : "Filter by git commit (ex f35111a946548e3b34a55abbad3e9bacce6cb10f)",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "device_name",
+          "description" : "Filter by device name",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "device_type",
+          "description" : "Filter by device type",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "before_time",
+          "description" : "Get data at or before this timestamp. Example 2016-08-29T09:12:33.001 or example: 2016-08-29T09:12:33",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "after_time",
+          "description" : "Get data at or after this timestamp. Example 2016-08-29T09:12:33.001 or example: 2016-08-29T09:12:33",
+          "type" : "string"
+        } ]
+      }
+    }
+  },
+  "definitions" : {
+    "DataOut" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "data_objects" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "data_objects" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Data"
+          }
+        }
+      }
+    },
+    "Data" : {
+      "type" : "object",
+      "required" : [ "data_id", "device_id", "activity_id", "type" ],
+      "properties" : {
+        "data_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 342
+        },
+        "device_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 3
+        },
+        "activity_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 10
+        },
+        "type" : {
+          "type" : "string",
+          "example" : "heartbeat"
+        },
+        "data" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DataExample"
+          }
+        }
+      }
+    },
+    "DataExample" : {
+      "type" : "object",
+      "properties" : {
+        "bpm" : {
+          "type" : "integer",
+          "format" : "int32",
+          "example" : 122
+        },
+        "message" : {
+          "type" : "string",
+          "example" : "Example message"
+        }
+      }
+    },
+    "dataIn" : {
+      "type" : "object",
+      "properties" : {
+        "heartbeat" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 0,
+          "example" : 120
+        },
+        "message" : {
+          "type" : "string",
+          "example" : "Example message/data"
+        }
+      }
+    },
+    "ActivityControl" : {
+      "type" : "object",
+      "required" : [ "device_id", "action" ],
+      "properties" : {
+        "device_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "example" : 3
+        },
+        "action" : {
+          "type" : "string",
+          "example" : "start"
+        },
+        "type" : {
+          "type" : "string",
+          "example" : "code review"
+        },
+        "repo" : {
+          "type" : "string",
+          "example" : "torvalds/linux"
+        },
+        "commit" : {
+          "type" : "string",
+          "example" : "16fbf79b0f83bc752cee8589279f1ebfe57b3b6e"
+        }
+      }
+    },
+    "ActivityResponse" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "activity_id" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "activity_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "example" : 6,
+          "minimum" : 0
+        }
+      }
+    },
+    "DataInResponse" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "continue" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "continue" : {
+          "type" : "boolean",
+          "example" : true
+        }
+      }
+    },
+    "GetDevices" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "devices" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "devices" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Devices"
+          }
+        }
+      }
+    },
+    "Devices" : {
+      "type" : "object",
+      "required" : [ "device_id", "name", "type", "user_id", "time_added" ],
+      "properties" : {
+        "device_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 4
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "My watch"
+        },
+        "type" : {
+          "type" : "string",
+          "example" : "Apple Watch Series 5"
+        },
+        "user_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 2
+        },
+        "time_added" : {
+          "type" : "string",
+          "example" : "2020-03-23T14:03:23.122Z"
+        }
+      }
+    },
+    "GetActivity" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "activities" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "activities" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Activities"
+          }
+        }
+      }
+    },
+    "Activities" : {
+      "type" : "object",
+      "required" : [ "activity_id", "user_id", "device_id", "type", "active", "time_start", "time_end" ],
+      "properties" : {
+        "activity_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 65
+        },
+        "user_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 3
+        },
+        "device_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 6
+        },
+        "type" : {
+          "type" : "string",
+          "example" : "code review"
+        },
+        "active" : {
+          "type" : "boolean",
+          "example" : false
+        },
+        "time_start" : {
+          "type" : "string",
+          "example" : "2016-08-29T09:12:33.001Z"
+        },
+        "time_end" : {
+          "type" : "string",
+          "example" : "2016-08-30T09:12:33.001Z"
+        }
+      }
+    },
+    "GetUsers" : {
+      "type" : "object",
+      "required" : [ "success", "errors", "users" ],
+      "properties" : {
+        "success" : {
+          "type" : "boolean",
+          "example" : true
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "example" : 5
+          },
+          "example" : [ ]
+        },
+        "users" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Users"
+          }
+        }
+      }
+    },
+    "Users" : {
+      "type" : "object",
+      "required" : [ "user_id", "username", "privilege" ],
+      "properties" : {
+        "user_id" : {
+          "type" : "integer",
+          "format" : "int32",
+          "minimum" : 1,
+          "example" : 3
+        },
+        "username" : {
+          "type" : "string",
+          "example" : "alan.turing"
+        },
+        "privilege" : {
+          "type" : "string",
+          "example" : "admin"
+        }
+      }
+    }
+  },
+  "schemes" : [ "https", "http" ],
+  "host" : "x.x.x.x",
+  "basePath" : "/api/v1"
+}
