@@ -9,6 +9,18 @@ import json
 
 logger = logging.getLogger(__name__)
 
+def statusCode(errors):
+    if 201 in errors or 301 in errors or 302 in errors or 304 in errors or 400 in errors:
+        return 400
+    elif 100 in errors or 102 in errors:
+        return 401
+    elif 101 in errors or 303 in errors:
+        return 403
+    elif 200 in errors:
+        return 424
+    else:
+        return 500
+
 @csrf_exempt
 def control(request):
     if request.method != "POST":
@@ -99,7 +111,7 @@ def control(request):
                     commit_item.save()
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "activity_id": activity_id})
+            return JsonResponse({"success": False, "errors": errors, "activity_id": activity_id}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "activity_id": activity_id})
 
@@ -132,7 +144,7 @@ def status(request):
                     activity_id = 0
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "activity_id": activity_id})
+            return JsonResponse({"success": False, "errors": errors, "activity_id": activity_id}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "activity_id": activity_id})
 
