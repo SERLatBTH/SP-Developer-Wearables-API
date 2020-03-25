@@ -29,6 +29,17 @@ def READ_PERMISSION(): return 1
 def WRITE_PERMISSION(): return 2
 def READ_WRITE_PERMISSION(): return 3
 
+def statusCode(errors):
+    if 201 in errors or 301 in errors or 302 in errors or 304 in errors or 400 in errors:
+        return 400
+    elif 100 in errors or 102 in errors:
+        return 401
+    elif 101 in errors or 303 in errors:
+        return 403
+    elif 200 in errors:
+        return 424
+    else:
+        return 500
 
 def validate_headers_in(request):
     #Check that all headers are set
@@ -116,7 +127,7 @@ def datain(request):
         
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "continue": continue_activity})
+            return JsonResponse({"success": False, "errors": errors, "continue": continue_activity}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "continue": continue_activity})
 
@@ -191,7 +202,7 @@ def dataout_users(request):
             user_json = stringify_user_info(users)
     #Response
     if len(errors) > 0:
-        return JsonResponse({"success": False, "errors": errors, "users": user_json})
+        return JsonResponse({"success": False, "errors": errors, "users": user_json}, status=statusCode(errors))
     else:
         return JsonResponse({"success": True, "errors": errors, "users": user_json})
 
@@ -243,7 +254,7 @@ def dataout_device(request):
         
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "devices": device_json})
+            return JsonResponse({"success": False, "errors": errors, "devices": device_json}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "devices": device_json})
 
@@ -367,7 +378,7 @@ def dataout_activity(request):
         
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "activities": activity_json})
+            return JsonResponse({"success": False, "errors": errors, "activities": activity_json}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "activities": activity_json})
 
@@ -501,6 +512,6 @@ def dataout(request):
             data_json = stringify_data_info(data_list)
         #Response
         if len(errors) > 0:
-            return JsonResponse({"success": False, "errors": errors, "data_objects": data_json})
+            return JsonResponse({"success": False, "errors": errors, "data_objects": data_json}, status=statusCode(errors))
         else:
             return JsonResponse({"success": True, "errors": errors, "data_objects": data_json})
